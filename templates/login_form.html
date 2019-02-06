@@ -1,23 +1,35 @@
 {% extends "base.html" %}
 
-    <style>
-        br{margin-bottom : 20px}
-    </style>
-    <form method='POST'>
+{% block content %}
+
+      
+    <form action="/login" method="POST">
         <label>Username
-            <input name="user-name" type="text" />
+            <input name="username" type="text" value='{{username}}' />
         </label>
+        <p class="error">{{user_name_error}}</p>
+        <br>
         <br>
         <label>Password
-            <input name="user-password" type="password" />
+            <input name="userpass" type="Password" value='{{userpass}}' />
         </label>
+        <p class="error">{{user_password_error}}</p>
+        <br>
         <br>
         <label>Verify Password
-            <input name="password-verify" type="password" />
+            <input name="passverify" type="Password" value='{{passverify}}' />
         </label>
+        <p class="error">{{password_verify_error}}</p>
+        <br>
         <br>
         <label>Email
-            <input name="user-email" type="email" />
+            <input name="useremail" type="text" value='{{useremail}}' />
         </label>
+        <p class="error">{{user_email_error}}</p>
         <br>
+        <br>
+        <input value="Submit" type="Submit" />
+    </form>
+
+{% endblock %}
     

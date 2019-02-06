@@ -1,5 +1,7 @@
 from flask import Flask, request, redirect, render_template
-import cgi
+import os
+import re,random
+
 
 app = Flask(__name__)
 app.config['DEBUG'] = True
@@ -9,50 +11,63 @@ app.config['DEBUG'] = True
 def index():
     return render_template('login_form.html')
 
+def is_empty(str):
+    if len(str) == 0:
+        return 0
+    else:
+        return 1
+
+def is_alphabet(str):
+    if re.match(r'^\w+$',str):
+        return 0
+    else:
+        return 1
+
+def checkemail(str):
+    if str == '@' or str == '.' or str == '':
+        return 1
+    else:
+        return 0    
+
+ 
+    
 @app.route("/login", methods=['POST'])
 def login():
-    user_name = request.form['user_name']
-    return render_template('welcome.html', name=user_name)
+    username = request.form['username']
+    #print (username)
+    userpass = request.form['userpass']
+    passverify = request.form['passverify']
+    useremail = request.form['useremail']
+    user_name_error = ''
+    user_password_error = ''
+    password_verify_error = ''
+    user_email_error = ''
 
+    if not is_empty(username):
+        user_name_error = "Username not entered"
+    else:
+        if len(username) > 20 or len(username) < 3 or is_alphabet(username):
+            user_name_error = " The range for username is 3 - 20 characters"
+    
+    if not is_empty(userpass):
+        user_password_error = "Password not entered"
+    else:
+        if len(userpass) > 20 or len(userpass) < 3 or is_alphabet(userpass):
+            user_password_error = " Invalid password "
 
-@app.route("/form-inputs")
-def display_form_inputs():
-    return form
-form = """
-<!DOCTYPE html>
-<html>
-<body>
-    <style>
-        br{margin-bottom : 20px}
-    </style>
-    <form method='POST'>
-        <label>Username
-            <input name="user-name" type="text" />
-        </label>
-        <br>
-        <label>Password
-            <input name="user-password" type="password" />
-        </label>
-        <br>
-        <label>Verify Password
-            <input name="password-verify" type="password" />
-        </label>
-        <br>
-        <label>Email
-            <input name="user-email" type="email" />
-        </label>
-        <br>
-    </form>
-</body>
+    if passverify != userpass or not is_empty(passverify):
+        password_verify_error = " Password and confirm password do not match"
 
-</html>
-"""
+    #if checkemail(username) or len(useremail) > 20 or len(useremail) < 3 :
+    if checkemail(useremail) or len(useremail) > 20 or len(useremail) < 3 :
+        user_email_error = "Please enter a valid email address"
 
-@app.route("/form-inputs", methods=['POST'])
-def print_form_values():
-    resp=""
-    for field in request.form.keys():
-        resp += "<b>{key}</b>: {value}<br>".format(key=field, value=request.form[field])
-        return resp
+    if not  user_name_error and not user_password_error and not password_verify_error and not user_email_error:
+        return render_template('base.html',username=username)
+    else:
+        return render_template('login_form.html', username=username, 
+            user_name_error=user_name_error, userpass=userpass,user_password_error=user_password_error,
+            passverify=passverify,password_verify_error=password_verify_error,useremail=useremail,
+            user_email_error=user_email_error)
 
 app.run()
