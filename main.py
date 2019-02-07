@@ -25,9 +25,9 @@ def is_alphabet(str):
 
 def checkemail(str):
     if str == '@' or str == '.' or str == '':
-        return 1
+        return 0
     else:
-        return 0    
+        return 1    
 
  
     
